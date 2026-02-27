@@ -22,22 +22,16 @@
 
         .mono { font-family: 'Courier New', Courier, monospace; }
 
-        .glow-text {
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-        }
-
-        /* Navigation Styling */
         .nav-btn {
             color: #666;
             font-family: 'Courier New', Courier, monospace;
             transition: all 0.2s ease;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-bottom: 2px solid transparent;
+            font-size: 0.85rem;
         }
 
-        .nav-btn:hover {
-            color: var(--matrix-green);
-        }
+        .nav-btn:hover { color: var(--matrix-green); }
 
         .nav-btn.active {
             color: var(--matrix-green);
@@ -45,21 +39,19 @@
             background: rgba(0, 255, 65, 0.05);
         }
 
-        /* Page Handling */
         .page-view {
             display: none;
             height: calc(100vh - 80px);
             overflow-y: auto;
-            padding: 2rem;
         }
 
         .page-view.active {
             display: block;
-            animation: slideUp 0.3s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -69,243 +61,527 @@
             transition: all 0.3s ease;
         }
 
-        .matrix-card:hover {
-            border-color: var(--matrix-green);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+        .matrix-card:hover { border-color: var(--matrix-green); }
+
+        .message-entry {
+            border-left: 2px solid var(--matrix-green);
+            background: rgba(0, 255, 65, 0.02);
+            animation: msgFade 0.3s ease-in;
+        }
+
+        @keyframes msgFade {
+            from { opacity: 0; transform: translateX(-5px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .btn-action {
             border: 1px solid var(--matrix-green);
             color: var(--matrix-green);
-            padding: 10px 24px;
+            padding: 8px 20px;
             font-family: 'Courier New', Courier, monospace;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             transition: all 0.3s;
+            background: transparent;
         }
 
         .btn-action:hover {
             background: var(--matrix-green);
             color: black;
-            font-weight: bold;
         }
 
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
             inset: 0;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(4px);
             align-items: center;
             justify-content: center;
+            z-index: 1000;
         }
 
-        /* Scrollbar */
+        .cps-zone {
+            user-select: none;
+            cursor: pointer;
+            transition: transform 0.05s;
+        }
+        .cps-zone:active {
+            transform: scale(0.98);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        canvas {
+            background: #000;
+            image-rendering: pixelated;
+        }
+
+        .game-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+        }
+
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #1a1a1a; }
         ::-webkit-scrollbar-thumb:hover { background: var(--matrix-green); }
-
-        .coming-soon-badge {
-            background: rgba(0, 255, 65, 0.1);
-            color: var(--matrix-green);
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border: 1px solid var(--matrix-green);
-            border-radius: 4px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="h-20 bg-black border-b border-white/5 flex-shrink-0">
-        <div class="max-w-7xl mx-auto px-8 h-full flex justify-between items-center">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="showPage('home')">
-                <div class="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-black font-bold">CS</div>
-                <h1 class="text-xl font-bold tracking-tighter text-white uppercase">EMCS <span class="text-green-500">CodeSpecialists</span></h1>
-            </div>
-            <div class="flex gap-4">
-                <button onclick="showPage('home')" id="nav-home" class="nav-btn active">HOME</button>
-                <button onclick="showPage('team')" id="nav-team" class="nav-btn">TEAM</button>
-                <button onclick="showPage('creations')" id="nav-creations" class="nav-btn">CREATIONS</button>
-            </div>
+    <nav class="h-20 bg-black border-b border-white/5 flex-shrink-0 px-8 flex justify-between items-center z-50">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="showPage('home')">
+            <div class="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-black font-bold">CS</div>
+            <h1 class="text-xl font-bold tracking-tighter text-white uppercase">EMCS <span class="text-green-500">CodeSpecialists</span></h1>
+        </div>
+        <div class="flex gap-1 md:gap-2">
+            <button onclick="showPage('home')" id="nav-home" class="nav-btn active">HOME</button>
+            <button onclick="showPage('team')" id="nav-team" class="nav-btn">TEAM</button>
+            <button onclick="showPage('comms')" id="nav-comms" class="nav-btn">COMMS</button>
+            <button onclick="showPage('games')" id="nav-games" class="nav-btn">GAMES</button>
+            <button onclick="showPage('creations')" id="nav-creations" class="nav-btn">REPO</button>
         </div>
     </nav>
 
-    <!-- Content -->
     <main class="flex-grow relative bg-[#050505]">
         
-        <!-- HOME PAGE -->
         <div id="page-home" class="page-view active">
-            <div class="h-full flex flex-col items-center justify-center text-center">
-                <div class="mono text-green-500 text-sm mb-4 tracking-widest bg-green-500/10 px-4 py-1 rounded">SYSTEM: ONLINE</div>
-                <h2 class="text-6xl md:text-8xl font-black text-white mb-6 tracking-tight">
-                    CODE<br><span class="text-green-500">SPECIALISTS</span>
-                </h2>
-                <p class="max-w-xl text-gray-500 mono mb-10 text-lg">
-                    High-performance software development, debugging, and visual engineering.
-                </p>
+            <div class="h-full flex flex-col items-center justify-center text-center p-6">
+                <div class="mono text-green-500 text-xs mb-4 tracking-widest bg-green-500/10 px-4 py-1 rounded">SYSTEM: ONLINE</div>
+                <h2 class="text-6xl md:text-8xl font-black text-white mb-6 tracking-tight uppercase">Code<br><span class="text-green-500">Specialists</span></h2>
+                <p class="max-w-xl text-gray-500 mono mb-10 text-lg">High-speed development, visual engineering, and interactive minigames.</p>
                 <div class="flex gap-4">
                     <button onclick="showPage('team')" class="btn-action">Operatives</button>
-                    <button onclick="showPage('creations')" class="btn-action">Repository</button>
+                    <button onclick="showPage('games')" class="btn-action">Play Games</button>
                 </div>
             </div>
         </div>
 
-        <!-- TEAM PAGE -->
-        <div id="page-team" class="page-view">
+        <div id="page-team" class="page-view p-12">
             <div class="max-w-6xl mx-auto">
-                <header class="mb-12">
-                    <h3 class="text-4xl font-black text-white mb-2 uppercase">Operatives</h3>
-                    <p class="text-green-500 mono text-sm">// Encrypted personnel files</p>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="member-grid">
-                    <!-- Members Injected by JS -->
+                <h3 class="text-4xl font-black text-white mb-10 uppercase">Operatives</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="member-grid"></div>
+            </div>
+        </div>
+
+        <div id="page-comms" class="page-view p-8">
+            <div class="max-w-6xl mx-auto h-full flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-64 flex-shrink-0">
+                    <h4 class="text-xs font-mono text-green-500 tracking-widest mb-4 uppercase">Select Identity</h4>
+                    <div id="identity-list" class="flex flex-col gap-3"></div>
+                </div>
+
+                <div class="flex-grow flex flex-col bg-black border border-white/10 rounded-lg overflow-hidden">
+                    <div class="bg-[#111] p-3 border-b border-white/10 flex justify-between items-center">
+                        <span class="text-xs mono text-green-500">SECURE_CHANNEL // COMMS</span>
+                        <button onclick="clearChat()" class="text-[10px] mono text-red-900 hover:text-red-500">WIPE_TERMINAL</button>
+                    </div>
+                    <div id="chat-messages" class="flex-grow overflow-y-auto p-6 space-y-4 font-mono text-sm">
+                        <div class="text-gray-600 italic">Waiting for connection... Select an identity to begin.</div>
+                    </div>
+                    <div class="p-4 bg-[#0a0a0a] border-t border-white/10">
+                        <form id="chat-form" onsubmit="handleSendMessage(event)" class="flex gap-3">
+                            <input type="text" id="msg-input" placeholder="Type message..." autocomplete="off" 
+                                class="flex-grow bg-black border border-white/10 p-3 text-green-500 mono text-sm focus:outline-none focus:border-green-500">
+                            <button type="submit" class="btn-action px-6 font-bold uppercase">Send</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- CREATIONS PAGE -->
-        <div id="page-creations" class="page-view">
-            <div class="max-w-4xl mx-auto">
-                <header class="mb-12">
-                    <h3 class="text-4xl font-black text-white mb-2 uppercase">Repository</h3>
-                    <p class="text-green-500 mono text-sm">// Development builds and secure deployments</p>
+        <div id="page-games" class="page-view p-12">
+            <div class="max-w-6xl mx-auto">
+                <header class="mb-10">
+                    <h3 class="text-4xl font-black text-white mb-2 uppercase">Minigame Lab</h3>
+                    <p class="text-green-500 mono text-sm uppercase">// Clayton Kim: Writing Editor & Analyst</p>
                 </header>
-                <div id="links-container" class="grid gap-4">
-                    <!-- Links Injected by JS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col lg:col-span-2">
+                        <div class="relative mb-4 h-64 rounded overflow-hidden bg-black flex items-center justify-center">
+                            <canvas id="mc-canvas" width="800" height="400" class="w-full h-full cursor-crosshair"></canvas>
+                            <div id="mc-overlay" class="game-overlay">
+                                <button onclick="startMC()" class="btn-action text-xs">LOAD_MATRIX_CRAFT</button>
+                                <p class="text-[10px] mono text-gray-500 mt-2">WASD: MOVE | CLICK: MINE | SHIFT+CLICK: BUILD | 1-4: TOOLS</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-white font-bold uppercase">Matrix Craft</h4>
+                            <div id="mc-inventory" class="flex gap-2">
+                                <div class="w-8 h-8 border border-green-500 bg-[#2d5a27] flex items-center justify-center text-[10px] font-bold cursor-pointer inv-slot" onclick="mcSelected=1" title="Grass (1)">1</div>
+                                <div class="w-8 h-8 border border-white/10 bg-[#5c4033] flex items-center justify-center text-[10px] font-bold cursor-pointer inv-slot" onclick="mcSelected=2" title="Dirt (2)">2</div>
+                                <div class="w-8 h-8 border border-white/10 bg-[#808080] flex items-center justify-center text-[10px] font-bold cursor-pointer inv-slot" onclick="mcSelected=3" title="Stone (3)">3</div>
+                                <div class="w-8 h-8 border border-white/10 bg-[#a0522d] flex items-center justify-center text-[10px] font-bold cursor-pointer inv-slot" onclick="mcSelected=4" title="Wood (4)">4</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col">
+                        <div class="relative mb-4 h-48 rounded overflow-hidden bg-black flex items-center justify-center">
+                            <canvas id="geo-canvas" width="600" height="200" class="w-full h-full"></canvas>
+                            <div id="geo-overlay" class="game-overlay">
+                                <button onclick="startGeo()" class="btn-action text-xs">RUN_GEO_SCRIPT</button>
+                                <p class="text-[10px] mono text-gray-600 mt-2">SPACE OR CLICK TO JUMP</p>
+                            </div>
+                        </div>
+                        <h4 class="text-white font-bold uppercase mb-1">Geo-Runner</h4>
+                        <div class="flex justify-around text-[10px] mono text-gray-500 uppercase mt-2">
+                            <span>Dist: <span id="geo-score" class="text-green-500">0</span></span>
+                        </div>
+                    </div>
+
+                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col">
+                        <div class="relative mb-4 h-48 rounded overflow-hidden bg-black flex items-center justify-center">
+                            <canvas id="snake-canvas" width="400" height="200" class="w-full h-full"></canvas>
+                            <div id="snake-overlay" class="game-overlay">
+                                <button onclick="startSnake()" class="btn-action text-xs">INITIALIZE_SNAKE</button>
+                                <p class="text-[10px] mono text-gray-600 mt-2">ARROWS TO MOVE</p>
+                            </div>
+                        </div>
+                        <h4 class="text-white font-bold uppercase mb-1">Matrix Snake</h4>
+                        <div class="flex justify-around text-[10px] mono text-gray-500 uppercase mt-2">
+                            <span>Length: <span id="snake-score" class="text-green-500">0</span></span>
+                        </div>
+                    </div>
+
+                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col">
+                        <div class="relative mb-4 h-48 rounded overflow-hidden bg-black flex items-center justify-center">
+                            <canvas id="tetris-canvas" width="200" height="400" class="h-full w-auto aspect-[1/2]"></canvas>
+                            <div id="tetris-overlay" class="game-overlay">
+                                <button onclick="startTetris()" class="btn-action text-xs">LOAD_TETRIS</button>
+                                <p class="text-[10px] mono text-gray-600 mt-2">ARROWS TO ROTATE/MOVE</p>
+                            </div>
+                        </div>
+                        <h4 class="text-white font-bold uppercase mb-1">Block Breaker</h4>
+                        <div class="flex justify-around text-[10px] mono text-gray-500 uppercase mt-2">
+                            <span>Score: <span id="tetris-score" class="text-green-500">0</span></span>
+                        </div>
+                    </div>
+
+                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col">
+                        <div class="relative mb-4 h-48 rounded overflow-hidden bg-black flex items-center justify-center">
+                             <div id="cps-area" onclick="handleCpsClick()" class="cps-zone w-full h-full flex flex-col items-center justify-center bg-black/40 group transition-colors">
+                                <div id="cps-display" class="text-4xl font-black text-white mb-1">START</div>
+                                <div id="cps-timer-label" class="text-xs mono text-green-500 uppercase tracking-widest">Click to begin (5s)</div>
+                            </div>
+                            <div id="cps-overlay" class="game-overlay" style="display:none;">
+                                <div id="cps-result" class="text-2xl font-bold text-white mb-2">0.0 CPS</div>
+                                <button onclick="resetCps()" class="btn-action text-xs">RETRY_TEST</button>
+                            </div>
+                        </div>
+                        <h4 class="text-white font-bold uppercase mb-1">CPS Test</h4>
+                        <div class="flex justify-around text-[10px] mono text-gray-500 uppercase mt-2">
+                            <span>Total Clicks: <span id="cps-count" class="text-green-500">0</span></span>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+        </div>
+
+        <div id="page-creations" class="page-view p-12">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-4xl font-black text-white mb-10 uppercase">Repository</h3>
+                <div id="creations-list" class="space-y-4"></div>
             </div>
         </div>
 
     </main>
 
-    <!-- Bio Modal -->
     <div id="bioModal" class="modal" onclick="if(event.target == this) closeModal()">
-        <div class="bg-[#111] border border-green-500/50 p-10 rounded-xl max-w-md w-full relative">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-green-500 transition-colors">
-                <i class="fas fa-times text-2xl"></i>
-            </button>
+        <div class="bg-[#111] border border-green-500 p-10 rounded-xl max-w-md w-full relative">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-green-500"><i class="fas fa-times text-2xl"></i></button>
             <div id="modal-content"></div>
         </div>
     </div>
 
     <script>
-        // CONFIGURATION: Creations with placeholders
-        const creationsList = [
-            { 
-                title: "Core System v1.0", 
-                desc: "The fundamental architecture for CodeSpecialists operations.",
-                status: "COMING SOON"
-            },
-            { 
-                title: "Visual Engine", 
-                desc: "Advanced graphical interface components for the web.",
-                status: "COMING SOON"
-            },
-            { 
-                title: "Debug Console", 
-                desc: "Proprietary tool for deep-level script analysis.",
-                status: "COMING SOON"
-            },
-            { 
-                title: "Documentation Engine", 
-                desc: "High-speed text processing and asset management.",
-                status: "COMING SOON"
-            }
+        const members = [
+            { id: 'shane', name: "Shane Choi", role: "Main Programmer", icon: "fa-code", color: "text-green-400", bio: "Shane Choi. The lead programmer for all projects. 12 years old Shane Choi writes all programs and structures everything. Strengths are coding and speed, certainly." },
+            { id: 'emerson', name: "Emerson Cox", role: "Main Debugger", icon: "fa-shield-virus", color: "text-red-400", bio: "Emerson Cox. Assistant programmer and code debugger. 6th grader Emerson Cox is the ultimate debug champion. Strengths are debugging and bug finding." },
+            { id: 'martin', name: "Martin Streckfus-Green", role: "Visuals and Graphics", icon: "fa-wand-magic-sparkles", color: "text-blue-400", bio: "Martin Streckfus-Green. Picture and graphics organizer. Martin S.G is the imagery manager for code writing. Strengths are pictures and images." },
+            { id: 'clayton', name: "Clayton Kim", role: "Writing Editor & Analyst", icon: "fa-pen-nib", color: "text-orange-400", bio: "Clayton Kim. Writing editor, analyst and also kind of debugger. 11 year old Clayton Kim is the writing editor for code and also kind of debugger. Strengths are English and code analysis." }
         ];
 
-        // TEAM DATA
-        const members = [
-            { name: "Shane Choi", role: "Main Programmer", icon: "fa-code", color: "text-green-400" },
-            { name: "Emerson Cox", role: "Main Debugger", icon: "fa-shield-virus", color: "text-red-400" },
-            { name: "Martin Streckfus-Green", role: "Visuals and Graphics", icon: "fa-wand-magic-sparkles", color: "text-blue-400" },
-            { name: "Clayton Kim", role: "Text Editor", icon: "fa-pen-nib", color: "text-orange-400" }
+        const creations = [
+            { title: "Core System v1.0", desc: "Fundamental architecture for operations." },
+            { title: "Visual Engine", desc: "Advanced graphical interface components." },
+            { title: "Debug Console", desc: "Proprietary script analysis tool." }
         ];
+
+        let currentIdentity = null;
+        let chatData = [];
 
         function showPage(pageId) {
-            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
-            const targetPage = document.getElementById('page-' + pageId);
-            const targetNav = document.getElementById('nav-' + pageId);
+            document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.add('active');
+            const nav = document.getElementById('nav-' + pageId);
+            if (nav) nav.classList.add('active');
             
-            if(targetPage) targetPage.classList.add('active');
-            if(targetNav) targetNav.classList.add('active');
+            if(pageId !== 'games') {
+                stopAllGames();
+            }
         }
 
+        function stopAllGames() {
+            clearInterval(snakeGameInterval);
+            clearInterval(tetrisInterval);
+            cancelAnimationFrame(geoReq);
+            cancelAnimationFrame(mcReq);
+            mcReq = null; geoReq = null;
+        }
+
+        // --- MATRIX CRAFT (2D MINECRAFT) ---
+        const mcCanvas = document.getElementById('mc-canvas'), mcCtx = mcCanvas.getContext('2d');
+        let mcWorld = [], mcCam = {x: 0}, mcPlayer = {x: 400, y: 100, vx: 0, vy: 0, onGround: false}, mcReq = null;
+        let mcSelected = 1;
+        const TILE = 40;
+        const BLOCK_COLORS = { 0: null, 1: '#2d5a27', 2: '#5c4033', 3: '#808080', 4: '#a0522d' };
+
+        function startMC() {
+            document.getElementById('mc-overlay').style.display = 'none';
+            mcWorld = [];
+            for(let x=0; x<100; x++) {
+                const h = 5 + Math.floor(Math.sin(x*0.1)*3);
+                for(let y=0; y<20; y++) {
+                    let type = 0;
+                    if(y > h) type = 2;
+                    else if(y === h) type = 1;
+                    if(y > h + 4) type = 3;
+                    mcWorld.push({x: x*TILE, y: y*TILE, type});
+                }
+            }
+            mcPlayer = {x: 400, y: 100, vx: 0, vy: 0, onGround: false};
+            mcLoop();
+        }
+
+        function mcLoop() {
+            mcCtx.fillStyle = '#0a1a2a'; mcCtx.fillRect(0,0,800,400);
+            mcPlayer.vy += 0.5;
+            mcPlayer.x += mcPlayer.vx; mcPlayer.y += mcPlayer.vy;
+            mcPlayer.onGround = false;
+
+            mcWorld.forEach(b => {
+                if(b.type !== 0) {
+                    if(mcPlayer.x < b.x + TILE && mcPlayer.x + 15 > b.x && mcPlayer.y < b.y + TILE && mcPlayer.y + 30 > b.y) {
+                        if(mcPlayer.vy > 0 && mcPlayer.y < b.y) { 
+                            mcPlayer.y = b.y - 30; mcPlayer.vy = 0; mcPlayer.onGround = true; 
+                        } else if(mcPlayer.vy < 0 && mcPlayer.y > b.y) {
+                            mcPlayer.y = b.y + TILE; mcPlayer.vy = 0;
+                        } else if(mcPlayer.vx > 0) {
+                            mcPlayer.x = b.x - 15;
+                        } else if(mcPlayer.vx < 0) {
+                            mcPlayer.x = b.x + TILE;
+                        }
+                    }
+                }
+            });
+
+            mcCam.x += (mcPlayer.x - 400 - mcCam.x) * 0.1;
+            mcCtx.save(); mcCtx.translate(-mcCam.x, 0);
+            mcWorld.forEach(b => {
+                if(b.type !== 0 && b.x > mcCam.x - TILE && b.x < mcCam.x + 800 + TILE) {
+                    mcCtx.fillStyle = BLOCK_COLORS[b.type];
+                    mcCtx.fillRect(b.x, b.y, TILE, TILE);
+                }
+            });
+            mcCtx.fillStyle = '#00ff41'; mcCtx.fillRect(mcPlayer.x, mcPlayer.y, 15, 30);
+            mcCtx.restore();
+            mcReq = requestAnimationFrame(mcLoop);
+        }
+
+        mcCanvas.addEventListener('mousedown', (e) => {
+            const rect = mcCanvas.getBoundingClientRect();
+            const mx = (e.clientX - rect.left) + mcCam.x;
+            const my = (e.clientY - rect.top);
+            const gx = Math.floor(mx/TILE)*TILE, gy = Math.floor(my/TILE)*TILE;
+            const b = mcWorld.find(b => b.x === gx && b.y === gy);
+            if(b) b.type = e.shiftKey ? mcSelected : 0;
+        });
+
+        // --- GEO RUNNER ---
+        const gCanvas = document.getElementById('geo-canvas'), gCtx = gCanvas.getContext('2d');
+        let gPlayer = {y:150, v:0}, gObs = [], gScore = 0, geoReq = null;
+        function startGeo() {
+            document.getElementById('geo-overlay').style.display='none';
+            gPlayer = {y:150, v:0}; gObs = []; gScore = 0; gLoop();
+        }
+        function gLoop() {
+            gCtx.fillStyle='#000'; gCtx.fillRect(0,0,600,200);
+            gPlayer.v += 0.8; gPlayer.y += gPlayer.v;
+            if(gPlayer.y > 150) { gPlayer.y = 150; gPlayer.v = 0; }
+            gCtx.fillStyle='#00ff41'; gCtx.fillRect(50, gPlayer.y, 30, 30);
+            if(Math.random() < 0.015) gObs.push({x:600});
+            gCtx.fillStyle='#ff4141';
+            gObs.forEach(o => {
+                o.x -= 7;
+                gCtx.beginPath(); gCtx.moveTo(o.x, 180); gCtx.lineTo(o.x+15, 150); gCtx.lineTo(o.x+30, 180); gCtx.fill();
+                if(o.x < 80 && o.x > 20 && gPlayer.y > 120) { 
+                    cancelAnimationFrame(geoReq); document.getElementById('geo-overlay').style.display='flex'; 
+                }
+            });
+            gObs = gObs.filter(o => o.x > -50);
+            gScore += 0.1; document.getElementById('geo-score').innerText = Math.floor(gScore);
+            geoReq = requestAnimationFrame(gLoop);
+        }
+
+        // --- SNAKE ---
+        let snakeGameInterval, snake, sDir, sFood, sScore;
+        function startSnake() {
+            document.getElementById('snake-overlay').style.display = 'none';
+            snake = [{x:10, y:10}, {x:9, y:10}]; sDir = 'right'; sScore = 0; spawnFood();
+            clearInterval(snakeGameInterval);
+            snakeGameInterval = setInterval(snakeTick, 100);
+        }
+        function spawnFood() { sFood = {x: Math.floor(Math.random()*40), y: Math.floor(Math.random()*20)}; }
+        function snakeTick() {
+            const head = {...snake[0]};
+            if(sDir === 'right') head.x++; else if(sDir === 'left') head.x--; else if(sDir === 'up') head.y--; else if(sDir === 'down') head.y++;
+            if(head.x<0 || head.x>=40 || head.y<0 || head.y>=20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                clearInterval(snakeGameInterval); document.getElementById('snake-overlay').style.display = 'flex'; return;
+            }
+            snake.unshift(head);
+            if(head.x === sFood.x && head.y === sFood.y) { sScore++; spawnFood(); } else snake.pop();
+            const sCtx = document.getElementById('snake-canvas').getContext('2d');
+            sCtx.fillStyle='#000'; sCtx.fillRect(0,0,400,200);
+            sCtx.fillStyle='#ff4141'; sCtx.fillRect(sFood.x*10, sFood.y*10, 9, 9);
+            sCtx.fillStyle='#00ff41'; snake.forEach(s => sCtx.fillRect(s.x*10, s.y*10, 9, 9));
+            document.getElementById('snake-score').innerText = sScore;
+        }
+
+        // --- TETRIS (BLOCK BREAKER) ---
+        let tetrisInterval, tGrid, tPiece, tScore;
+        const T_SHAPES = [
+            [[1,1,1,1]], 
+            [[1,1],[1,1]], 
+            [[1,1,1],[0,1,0]], 
+            [[1,1,0],[0,1,1]], 
+            [[0,1,1],[1,1,0]]
+        ];
+        function startTetris() {
+            document.getElementById('tetris-overlay').style.display = 'none';
+            tGrid = Array(20).fill().map(() => Array(10).fill(0)); tScore = 0; spawnPiece();
+            clearInterval(tetrisInterval); tetrisInterval = setInterval(tetrisTick, 500);
+        }
+        function spawnPiece() {
+            const shape = T_SHAPES[Math.floor(Math.random()*T_SHAPES.length)];
+            tPiece = {x: 3, y: 0, shape};
+            if(tCollide()) { clearInterval(tetrisInterval); document.getElementById('tetris-overlay').style.display='flex'; }
+        }
+        function tCollide() {
+            return tPiece.shape.some((row, dy) => row.some((v, dx) => {
+                let ny = tPiece.y + dy, nx = tPiece.x + dx;
+                return v && (ny >= 20 || nx < 0 || nx >= 10 || (ny >= 0 && tGrid[ny][nx]));
+            }));
+        }
+        function tetrisTick() {
+            tPiece.y++;
+            if(tCollide()) {
+                tPiece.y--;
+                tPiece.shape.forEach((row, dy) => row.forEach((v, dx) => { if(v) tGrid[tPiece.y+dy][tPiece.x+dx] = 1; }));
+                tGrid = tGrid.filter(row => !row.every(v => v));
+                while(tGrid.length < 20) tGrid.unshift(Array(10).fill(0));
+                tScore += 100; document.getElementById('tetris-score').innerText = tScore;
+                spawnPiece();
+            }
+            drawTetris();
+        }
+        function drawTetris() {
+            const ctx = document.getElementById('tetris-canvas').getContext('2d');
+            ctx.fillStyle = '#000'; ctx.fillRect(0,0,200,400);
+            tGrid.forEach((row, y) => row.forEach((v, x) => { if(v) { ctx.fillStyle='#222'; ctx.fillRect(x*20, y*20, 19, 19); }}));
+            ctx.fillStyle = '#00ff41';
+            tPiece.shape.forEach((row, dy) => row.forEach((v, dx) => { if(v) ctx.fillRect((tPiece.x+dx)*20, (tPiece.y+dy)*20, 19, 19); }));
+        }
+
+        // --- CPS TEST ---
+        let cpsActive = false, cpsFinished = false, clicks = 0;
+        function handleCpsClick() {
+            if(cpsFinished) return;
+            if(!cpsActive) {
+                cpsActive = true; 
+                clicks = 1; 
+                document.getElementById('cps-display').innerText = 'GO!';
+                document.getElementById('cps-timer-label').innerText = '5s Remaining...';
+                setTimeout(() => {
+                    cpsActive = false;
+                    cpsFinished = true;
+                    const finalCps = (clicks/5).toFixed(1);
+                    document.getElementById('cps-display').innerText = 'TIME!';
+                    document.getElementById('cps-result').innerText = finalCps + ' CPS';
+                    document.getElementById('cps-overlay').style.display = 'flex';
+                }, 5000);
+            } else clicks++;
+            document.getElementById('cps-count').innerText = clicks;
+        }
+        function resetCps() {
+            cpsActive = false;
+            cpsFinished = false;
+            clicks = 0;
+            document.getElementById('cps-overlay').style.display = 'none';
+            document.getElementById('cps-display').innerText = 'START';
+            document.getElementById('cps-timer-label').innerText = 'Click to begin (5s)';
+            document.getElementById('cps-count').innerText = '0';
+        }
+
+        // --- GLOBAL INPUTS ---
+        window.onkeydown = (e) => {
+            const k = e.key.toLowerCase();
+            if(k === 'a') { 
+                mcPlayer.vx = -5; 
+                if(tPiece) { tPiece.x--; if(tCollide()) tPiece.x++; drawTetris(); } 
+            }
+            if(k === 'd') { 
+                mcPlayer.vx = 5; 
+                if(tPiece) { tPiece.x++; if(tCollide()) tPiece.x--; drawTetris(); } 
+            }
+            if(k === 'w' && mcPlayer.onGround) mcPlayer.vy = -12;
+            if(k === 's' && tPiece) { tPiece.y++; if(tCollide()) tPiece.y--; drawTetris(); }
+            if(k === ' ' || k === 'arrowup') {
+                if(gPlayer.y === 150) gPlayer.v = -13;
+                if(tPiece) {
+                    const r = tPiece.shape[0].map((_, i) => tPiece.shape.map(row => row[i]).reverse());
+                    const old = tPiece.shape; tPiece.shape = r;
+                    if(tCollide()) tPiece.shape = old;
+                    drawTetris();
+                }
+            }
+            if(k === 'arrowleft' && sDir !== 'right') sDir = 'left';
+            if(k === 'arrowright' && sDir !== 'left') sDir = 'right';
+            if(k === 'arrowup' && sDir !== 'down') sDir = 'up';
+            if(k === 'arrowdown' && sDir !== 'up') sDir = 'down';
+            if(['1','2','3','4'].includes(k)) {
+                mcSelected = parseInt(k);
+                document.querySelectorAll('.inv-slot').forEach((s, i) => s.style.borderColor = (i+1 === mcSelected ? '#00ff41' : 'rgba(255,255,255,0.1)'));
+            }
+        };
+        window.onkeyup = (e) => { if(e.key === 'a' || e.key === 'd') mcPlayer.vx = 0; };
+
+        // --- UI ---
         function renderMembers() {
-            const grid = document.getElementById('member-grid');
-            grid.innerHTML = members.map((m, index) => `
-                <div class="matrix-card p-8 rounded-lg cursor-pointer group" onclick="showBio(${index})">
-                    <div class="w-12 h-12 rounded bg-white/5 flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-colors">
-                        <i class="fas ${m.icon} text-xl ${m.color}"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-white mb-1">${m.name}</h4>
-                    <p class="text-gray-500 text-xs mono uppercase tracking-widest">${m.role}</p>
-                    <div class="mt-8 pt-4 border-t border-white/5 flex justify-between items-center">
-                        <span class="text-[10px] mono text-gray-600 uppercase">Profile_Ready</span>
-                        <i class="fas fa-arrow-right text-[10px] text-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                    </div>
-                </div>
-            `).join('');
+            const grid = document.getElementById('member-grid'), idList = document.getElementById('identity-list');
+            grid.innerHTML = members.map((m, i) => `<div class="matrix-card p-8 rounded-lg cursor-pointer group" onclick="showBio(${i})"><i class="fas ${m.icon} text-2xl ${m.color} mb-6"></i><h4 class="text-xl font-bold text-white mb-1 uppercase">${m.name}</h4><p class="text-gray-500 text-xs mono uppercase">${m.role}</p></div>`).join('');
+            idList.innerHTML = members.map(m => `<button onclick="selectIdentity('${m.id}')" id="id-${m.id}" class="p-4 bg-[#111] border border-white/5 rounded text-left transition-all hover:border-green-500 group"><div class="text-sm font-bold text-gray-300 group-hover:text-green-500 uppercase">${m.name}</div><div class="text-[10px] mono text-gray-600 uppercase">${m.role}</div></button>`).join('');
         }
+        function selectIdentity(id) { currentIdentity = members.find(m => m.id === id); document.querySelectorAll('#identity-list button').forEach(b => b.classList.remove('border-green-500', 'bg-green-500/10')); document.getElementById('id-' + id).classList.add('border-green-500', 'bg-green-500/10'); }
+        function handleSendMessage(e) { e.preventDefault(); const input = document.getElementById('msg-input'); if(!input.value || !currentIdentity) return; chatData.push({ sender: currentIdentity, text: input.value }); input.value = ''; updateChatUI(); }
+        function updateChatUI() { const c = document.getElementById('chat-messages'); c.innerHTML = chatData.map(m => `<div class="message-entry p-3"><div class="text-[10px] ${m.sender.color}">${m.sender.name}</div><div class="text-sm">${m.text}</div></div>`).join(''); c.scrollTop = c.scrollHeight; }
+        function showBio(i) { const m = members[i]; document.getElementById('modal-content').innerHTML = `<h2 class="text-3xl font-black text-white uppercase">${m.name}</h2><p class="text-green-500 mb-4">${m.role}</p><div class="text-gray-400 mono text-sm">${m.bio}</div>`; document.getElementById('bioModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('bioModal').style.display = 'none'; }
+        function clearChat() { chatData = []; updateChatUI(); }
 
-        function renderCreations() {
-            const container = document.getElementById('links-container');
-            container.innerHTML = creationsList.map(item => `
-                <div class="matrix-card p-6 rounded-lg opacity-80 cursor-default">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center gap-3 mb-1">
-                                <h5 class="text-white font-bold text-lg">${item.title}</h5>
-                                <span class="coming-soon-badge mono">${item.status}</span>
-                            </div>
-                            <p class="text-gray-500 text-sm mono">${item.desc}</p>
-                        </div>
-                        <i class="fas fa-lock text-gray-800 text-sm"></i>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showBio(index) {
-            const m = members[index];
-            const content = document.getElementById('modal-content');
-            content.innerHTML = `
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="w-16 h-16 rounded bg-green-500/10 flex items-center justify-center">
-                        <i class="fas ${m.icon} text-3xl ${m.color}"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-black text-white uppercase">${m.name}</h2>
-                        <p class="text-green-500 text-xs mono uppercase tracking-tighter">${m.role}</p>
-                    </div>
-                </div>
-                <div class="bg-black/50 p-6 rounded-lg border border-white/5 mb-6">
-                    <p class="text-gray-400 mono text-sm leading-relaxed">
-                        FILL OUT LATER WITH YOUR BIOGRAPHY. This encrypted profile contains the professional history and technical expertise of ${m.name}.
-                    </p>
-                </div>
-                <div class="flex justify-between items-center text-[10px] mono text-gray-600">
-                    <span>STATUS: ACTIVE</span>
-                    <span>AUTHORITY: HIGH</span>
-                </div>
-            `;
-            document.getElementById('bioModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('bioModal').style.display = 'none';
-        }
-
-        window.onload = () => {
-            renderMembers();
-            renderCreations();
+        window.onload = () => { 
+            renderMembers(); 
+            document.getElementById('creations-list').innerHTML = creations.map(c => `<div class="matrix-card p-4 rounded-lg flex justify-between"><div><div class="text-white font-bold">${c.title}</div><div class="text-xs text-gray-500">${c.desc}</div></div><i class="fas fa-lock text-gray-800"></i></div>`).join(''); 
         };
     </script>
 </body>
