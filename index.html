@@ -146,7 +146,15 @@
         <!-- Team -->
         <div id="page-team" class="page-view p-12">
             <div class="max-w-6xl mx-auto">
-                <h3 class="text-4xl font-black text-white mb-10 uppercase">Operatives</h3>
+                <div class="mb-12">
+                    <h3 class="text-4xl font-black text-white mb-4 uppercase">The Operatives</h3>
+                    <p class="text-gray-400 mono text-sm leading-relaxed max-w-2xl">
+                        EMCS CodeSpecialists is an elite team dedicated to pushing the boundaries of interactive web experiences. 
+                        We combine high-level programming with precise debugging and advanced visual engineering to build 
+                        applications that are both functional and immersive. Our mission is to transform complex code into 
+                        seamless, high-speed digital reality, maintaining a strict focus on performance and technical excellence.
+                    </p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="member-grid"></div>
             </div>
         </div>
@@ -182,7 +190,7 @@
             <div class="max-w-6xl mx-auto">
                 <header class="mb-10">
                     <h3 class="text-4xl font-black text-white mb-2 uppercase">Minigame Lab</h3>
-                    <p class="text-green-500 mono text-sm uppercase">// Clayton Kim: Writing Editor & Analyst</p>
+                    <p class="text-green-500 mono text-sm uppercase">// Clayton Kim: Visuals</p>
                 </header>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="matrix-card p-6 rounded-lg text-center flex flex-col lg:col-span-2">
@@ -216,9 +224,30 @@
 
     <script>
         const members = [
-            { id: 'shane', name: "Shane Choi", role: "Main Programmer", icon: "fa-code", color: "text-green-400", bio: "Shane Choi. Lead programmer. 12 years old. Writes all programs and structures everything." },
-            { id: 'emerson', name: "Emerson Cox", role: "Main Debugger", icon: "fa-shield-virus", color: "text-red-400", bio: "Emerson Cox. Ultimate debug champion." },
-            { id: 'clayton', name: "Clayton Kim", role: "Writing Editor & Analyst", icon: "fa-pen-nib", color: "text-orange-400", bio: "Clayton Kim. 11 year old writing editor and analyst." }
+            { 
+                id: 'shane', 
+                name: "Shane Choi", 
+                role: "Main Programmer", 
+                icon: "fa-code", 
+                color: "text-green-400", 
+                bio: "Shane Choi is the 12-year-old architectural mastermind and Lead Programmer at EMCS. He is responsible for the core logic and structural integrity of every application developed by the team. With a focus on high-speed efficiency and clean syntax, Shane manages complex project workflows and ensures that every line of code serves a specific purpose in the final build. He is the engine that drives our development cycles from concept to deployment." 
+            },
+            { 
+                id: 'emerson', 
+                name: "Emerson Cox", 
+                role: "Main Debugger", 
+                icon: "fa-shield-virus", 
+                color: "text-red-400", 
+                bio: "Emerson Cox serves as the Ultimate Debug Champion for EMCS. Specializing in technical stability and security, Emerson meticulously scans through thousands of lines of code to identify and eliminate vulnerabilities. His role is critical in maintaining the high-performance standards of the team, ensuring that every project remains bug-free and optimized for various environments. If a system has a flaw, Emerson is the one who finds and repairs it." 
+            },
+            { 
+                id: 'clayton', 
+                name: "Clayton Kim", 
+                role: "Visuals", 
+                icon: "fa-eye", 
+                color: "text-blue-400", 
+                bio: "Clayton Kim is the 11-year-old Visuals Lead at EMCS. Transitioning from editorial roles to visual engineering, Clayton is now focused on asset design, UI aesthetics, and interactive front-end elements. He ensures that every project not only functions perfectly but also possesses a high-end, immersive look. From crafting SVG assets to managing the 'Matrix' aesthetic of our interfaces, Clayton bridges the gap between technical code and human-centric design." 
+            }
         ];
 
         const projects = [
@@ -274,7 +303,7 @@
             document.getElementById('modal-content').innerHTML = `
                 <h2 class="text-3xl font-black text-white uppercase">${m.name}</h2>
                 <p class="text-green-500 mb-4">${m.role}</p>
-                <div class="text-gray-400 mono text-sm">${m.bio}</div>`;
+                <div class="text-gray-400 mono text-sm leading-relaxed">${m.bio}</div>`;
             document.getElementById('bioModal').style.display = 'flex';
         }
 
