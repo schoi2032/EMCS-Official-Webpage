@@ -156,32 +156,6 @@
             </div>
         </div>
 
-        <!-- Comms -->
-        <div id="page-comms" class="page-view p-8">
-            <div class="max-w-6xl mx-auto h-full flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-64 flex-shrink-0">
-                    <h4 class="text-xs font-mono text-green-500 tracking-widest mb-4 uppercase">Select Identity</h4>
-                    <div id="identity-list" class="flex flex-col gap-3"></div>
-                </div>
-                <div class="flex-grow flex flex-col bg-black border border-white/10 rounded-lg overflow-hidden">
-                    <div class="bg-[#111] p-3 border-b border-white/10 flex justify-between items-center">
-                        <span class="text-xs mono text-green-500">SECURE_CHANNEL // COMMS</span>
-                        <button onclick="clearChat()" class="text-[10px] mono text-red-900 hover:text-red-500">WIPE_TERMINAL</button>
-                    </div>
-                    <div id="chat-messages" class="flex-grow overflow-y-auto p-6 space-y-4 font-mono text-sm">
-                        <div class="text-gray-600 italic">Waiting for connection... Select an identity to begin.</div>
-                    </div>
-                    <div class="p-4 bg-[#0a0a0a] border-t border-white/10">
-                        <form id="chat-form" onsubmit="handleSendMessage(event)" class="flex gap-3">
-                            <input type="text" id="msg-input" placeholder="Type message..." autocomplete="off"
-                            class="flex-grow bg-black border border-white/10 p-3 text-green-500 mono text-sm focus:outline-none focus:border-green-500">
-                            <button type="submit" class="btn-action px-6 font-bold uppercase">Send</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Projects -->
         <div id="page-creations" class="page-view p-12">
             <div class="max-w-4xl mx-auto">
