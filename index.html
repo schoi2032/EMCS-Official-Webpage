@@ -123,8 +123,6 @@
         <div class="flex gap-1 md:gap-2">
             <button onclick="showPage('home')" id="nav-home" class="nav-btn active">HOME</button>
             <button onclick="showPage('team')" id="nav-team" class="nav-btn">TEAM</button>
-            <button onclick="showPage('comms')" id="nav-comms" class="nav-btn">COMMS</button>
-            <button onclick="showPage('games')" id="nav-games" class="nav-btn">GAMES</button>
             <button onclick="showPage('creations')" id="nav-creations" class="nav-btn">PROJECTS</button>
         </div>
     </nav>
@@ -135,10 +133,9 @@
             <div class="h-full flex flex-col items-center justify-center text-center p-6">
                 <div class="mono text-green-500 text-xs mb-4 tracking-widest bg-green-500/10 px-4 py-1 rounded">SYSTEM: ONLINE</div>
                 <h2 class="text-6xl md:text-8xl font-black text-white mb-6 tracking-tight uppercase">Code<br><span class="text-green-500">Specialists</span></h2>
-                <p class="max-w-xl text-gray-500 mono mb-10 text-lg">High-speed development, visual engineering, and interactive minigames.</p>
+                <p class="max-w-xl text-gray-500 mono mb-10 text-lg">High-speed development, visual engineering.</p>
                 <div class="flex gap-4">
                     <button onclick="showPage('team')" class="btn-action">Operatives</button>
-                    <button onclick="showPage('games')" class="btn-action">Play Games</button>
                 </div>
             </div>
         </div>
@@ -180,27 +177,6 @@
                             class="flex-grow bg-black border border-white/10 p-3 text-green-500 mono text-sm focus:outline-none focus:border-green-500">
                             <button type="submit" class="btn-action px-6 font-bold uppercase">Send</button>
                         </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Games -->
-        <div id="page-games" class="page-view p-12">
-            <div class="max-w-6xl mx-auto">
-                <header class="mb-10">
-                    <h3 class="text-4xl font-black text-white mb-2 uppercase">Minigame Lab</h3>
-                    <p class="text-green-500 mono text-sm uppercase">// Clayton Kim: Visuals</p>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="matrix-card p-6 rounded-lg text-center flex flex-col lg:col-span-2">
-                        <div class="relative mb-4 h-64 rounded overflow-hidden bg-black flex items-center justify-center">
-                            <canvas id="mc-canvas" width="800" height="400" class="w-full h-full cursor-crosshair"></canvas>
-                            <div id="mc-overlay" class="game-overlay">
-                                <button onclick="startMC()" class="btn-action text-xs">LOAD_MATRIX_CRAFT</button>
-                            </div>
-                        </div>
-                        <h4 class="text-white font-bold uppercase">Matrix Craft</h4>
                     </div>
                 </div>
             </div>
